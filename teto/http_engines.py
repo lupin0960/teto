@@ -7,11 +7,16 @@ import aiohttp
 
 from .exceptions import TetoAPIError, TetoRateLimitError
 
+USER_AGENT = "teto/1.0.0 (https://github.com/tetoguys/teto)"
+
 
 class HttpEngine(ABC):
     def __init__(self, session_id: str):
         self.session_id = session_id
-        self.headers = {"X-Session-ID": self.session_id}
+        self.headers = {
+            "X-Session-ID": self.session_id,
+            "User-Agent": USER_AGENT,
+        }
 
     @abstractmethod
     def request(self, url: str) -> Dict[str, Any]:
