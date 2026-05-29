@@ -1,11 +1,11 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from .base import BaseModel
 
 
 class LabsScoreflow(BaseModel):
     """
     GET /labs/scoreflow/:user/:gamemode
-    data key: 'scoreflow'
+    Response: { startTime: int, points: [[offset_ms, pb, score], ...] }
     """
 
     def __init__(self, data: Dict[str, Any]):
@@ -16,17 +16,22 @@ class LabsScoreflow(BaseModel):
         return cls(data)
 
     @property
-    def scoreflow(self) -> List[Any]:
-        return self._raw.get("scoreflow", [])
+    def start_time(self) -> Optional[int]:
+        return self._raw.get("startTime")
+
+    @property
+    def points(self) -> List[Any]:
+        """List of [offset_ms, is_pb, score] entries."""
+        return self._raw.get("points", [])
 
     def __repr__(self) -> str:
-        return f"<LabsScoreflow datapoints={len(self.scoreflow)}>"
+        return f"<LabsScoreflow datapoints={len(self.points)}>"
 
 
 class LabsLeagueflow(BaseModel):
     """
     GET /labs/leagueflow/:user
-    data key: 'leagueflow'
+    Response shape mirrors scoreflow: { startTime: int, points: [...] }
     """
 
     def __init__(self, data: Dict[str, Any]):
@@ -37,17 +42,22 @@ class LabsLeagueflow(BaseModel):
         return cls(data)
 
     @property
-    def leagueflow(self) -> List[Any]:
-        return self._raw.get("leagueflow", [])
+    def start_time(self) -> Optional[int]:
+        return self._raw.get("startTime")
+
+    @property
+    def points(self) -> List[Any]:
+        """List of [offset_ms, ...] entries."""
+        return self._raw.get("points", [])
 
     def __repr__(self) -> str:
-        return f"<LabsLeagueflow datapoints={len(self.leagueflow)}>"
+        return f"<LabsLeagueflow datapoints={len(self.points)}>"
 
 
 class LabsLeagueRanks(BaseModel):
     """
     GET /labs/league_ranks
-    Response shape: { data: { <rank>: { ..stats.. } }, s: ..., t: ... }
+    Response: { data: { <rank>: { ..stats.. } }, s: ..., t: ... }
     """
 
     def __init__(self, data: Dict[str, Any]):
@@ -59,7 +69,6 @@ class LabsLeagueRanks(BaseModel):
 
     @property
     def ranks(self) -> Dict[str, Any]:
-        """rank name -> stats dict"""
         return self._raw.get("data", self._raw)
 
     def __repr__(self) -> str:
