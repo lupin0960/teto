@@ -181,5 +181,5 @@ class TetoClient:
         if params:
             url += "?" + "&".join(params)
         data = self.get_request(url)
-        records = data if isinstance(data, list) else data.get("records", [])
-        return [UserRecord.from_dict(r) for r in records]
+        entries = data if isinstance(data, list) else data.get("entries", [])
+        return [UserRecord.from_dict(r) for r in entries]
