@@ -14,6 +14,15 @@ from .models import (
     UserSummaryAchievements,
     UserSummaryAll,
     UserRecord,
+    ServerStats,
+    ServerActivity,
+    Record,
+    NewsItem,
+    LabsScoreflow,
+    LabsLeagueflow,
+    LabsLeagueRanks,
+    Achievement,
+    AchievementEntry,
 )
 
 
@@ -42,6 +51,20 @@ class TetoClient:
 
     def close(self):
         return self.engine.close()
+
+    # -------------------------
+    # General endpoints
+    # -------------------------
+
+    def get_server_stats(self) -> ServerStats:
+        """GET /general/stats"""
+        data = self.get_request("general/stats")
+        return ServerStats.from_dict(data)
+
+    def get_server_activity(self) -> ServerActivity:
+        """GET /general/activity"""
+        data = self.get_request("general/activity")
+        return ServerActivity.from_dict(data)
 
     # -------------------------
     # User endpoints
@@ -183,3 +206,134 @@ class TetoClient:
         data = self.get_request(url)
         entries = data if isinstance(data, list) else data.get("entries", [])
         return [UserRecord.from_dict(r) for r in entries]
+
+    # -------------------------
+    # Records endpoints
+    # -------------------------
+
+    def get_records_leaderboard(
+        self,
+        leaderboard: str,
+        before: Optional[float] = None,
+        after: Optional[float] = None,
+        limit: Optional[int] = None,
+        country: Optional[str] = None,
+    ) -> List[Record]:
+        """
+        GET /records/:leaderboard
+        leaderboard: e.g. '40l_global', 'blitz_global', '40l_country_KR'
+        """
+        params = []
+        if before is not None:
+            params.append(f"before={before}")
+        if after is not None:
+            params.append(f"after={after}")
+        if limit is not None:
+            params.append(f"limit={limit}")
+        if country is not None:
+            params.append(f"country={country}")
+        url = f"records/{leaderboard}"
+        if params:
+            url += "?" + "&".join(params)
+        data = self.get_request(url)
+        entries = data if isinstance(data, list) else data.get("entries", [])
+        return [Record.from_dict(r) for r in entries]
+
+    def search_record(
+        self,
+        gamemode: str,
+        ts: str,
+        user: Optional[str] = None,
+    ) -> Optional[Record]:
+        """
+        GET /records/reverse
+        gamemode: '40l', 'blitz', etc.
+        ts: ISO 8601 timestamp
+        user: optional user ID
+        """
+        params = [f"gamemode={gamemode}", f"ts={ts}"]
+        if user is not None:
+            params.append(f"user={user}")
+        url = "records/reverse?" + "&".join(params)
+        data = self.get_request(url)
+        if data is None:
+            return None
+        return Record.from_dict(data)
+
+    # -------------------------
+    # News endpoints
+    # -------------------------
+
+    def get_all_news(self, limit: Optional[int] = None) -> List[NewsItem]:
+        """
+        GET /news/
+        The latest news items in any stream.
+        """
+        url = "news/"
+        if limit is not None:
+            url += f"?limit={limit}"
+        data = self.get_request(url)
+        news = data if isinstance(data, list) else data.get("news", [])
+        return [NewsItem.from_dict(n) for n in news]
+
+    def get_news(self, stream: str, limit: Optional[int] = None) -> List[NewsItem]:
+        """
+        GET /news/:stream
+        stream: 'global' or 'user_{user_id}'
+        """
+        url = f"news/{stream}"
+        if limit is not None:
+            url += f"?limit={limit}"
+        data = self.get_request(url)
+        news = data if isinstance(data, list) else data.get("news", [])
+        return [NewsItem.from_dict(n) for n in news]
+
+    # -------------------------
+    # Labs endpoints
+    # -------------------------
+
+    def get_labs_scoreflow(self, user: str, gamemode: str) -> LabsScoreflow:
+        """GET /labs/scoreflow/:user/:gamemode"""
+        data = self.get_request(f"labs/scoreflow/{user}/{gamemode}")
+        return LabsScoreflow.from_dict(data)
+
+    def get_labs_leagueflow(self, user: str) -> LabsLeagueflow:
+        """GET /labs/leagueflow/:user"""
+        data = self.get_request(f"labs/leagueflow/{user}")
+        return LabsLeagueflow.from_dict(data)
+
+    def get_labs_league_ranks(self) -> LabsLeagueRanks:
+        """GET /labs/league_ranks"""
+        data = self.get_request("labs/league_ranks")
+        return LabsLeagueRanks.from_dict(data)
+
+    # -------------------------
+    # Achievements endpoints
+    # -------------------------
+
+    def get_achievement(self, k: int) -> Achievement:
+        """GET /achievements/:k"""
+        data = self.get_request(f"achievements/{k}")
+        return Achievement.from_dict(data)
+
+    def get_achievement_entries(
+        self,
+        k: int,
+        before: Optional[float] = None,
+        after: Optional[float] = None,
+        limit: Optional[int] = None,
+    ) -> List[AchievementEntry]:
+        """GET /achievements/:k/entries"""
+        params = []
+        if before is not None:
+            params.append(f"before={before}")
+        if after is not None:
+            params.append(f"after={after}")
+        if limit is not None:
+            params.append(f"limit={limit}")
+        url = f"achievements/{k}/entries"
+        if params:
+            url += "?" + "&".join(params)
+        data = self.get_request(url)
+        entries = data if isinstance(data, list) else data.get("entries", [])
+        return [AchievementEntry.from_dict(e) for e in entries]

@@ -13,6 +13,15 @@ from .models import (
     UserSummaryAchievements,
     UserSummaryAll,
     UserRecord,
+    ServerStats,
+    ServerActivity,
+    Record,
+    NewsItem,
+    LabsScoreflow,
+    LabsLeagueflow,
+    LabsLeagueRanks,
+    Achievement,
+    AchievementEntry,
 )
 
 __title__ = "teto"
@@ -38,4 +47,13 @@ __all__ = [
     "UserSummaryAchievements",
     "UserSummaryAll",
     "UserRecord",
+    "ServerStats",
+    "ServerActivity",
+    "Record",
+    "NewsItem",
+    "LabsScoreflow",
+    "LabsLeagueflow",
+    "LabsLeagueRanks",
+    "Achievement",
+    "AchievementEntry",
 ]
