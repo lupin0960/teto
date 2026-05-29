@@ -5,9 +5,8 @@ import aiohttp
 
 from .ribbon import Ribbon
 
-_HEADERS = {
+_SESSION_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
-    "Accept": "application/vnd.osk.theorypack",
     "Referer": "https://tetr.io/",
 }
 
@@ -52,7 +51,7 @@ class Bot:
         await self._start()
 
     async def _start(self) -> None:
-        self._session = aiohttp.ClientSession(headers=_HEADERS)
+        self._session = aiohttp.ClientSession(headers=_SESSION_HEADERS)
         try:
             endpoint, self._signature = await self._fetch_connection_info()
             print(f"[teto] Connecting to: {endpoint}")
@@ -65,9 +64,9 @@ class Bot:
             await self._session.close()
 
     async def _fetch_connection_info(self):
-        auth_headers = {"Authorization": f"Bearer {self._token}"}
+        headers = {"Authorization": f"Bearer {self._token}"}
 
-        async with self._session.get(self._RIBBON_ENDPOINT_URL, headers=auth_headers) as resp:
+        async with self._session.get(self._RIBBON_ENDPOINT_URL, headers=headers) as resp:
             data = await resp.json(content_type=None)
             print(f"[teto] ribbon endpoint response: {data}")
             endpoint = data.get("endpoint", "wss://tetr.io/ribbon")
