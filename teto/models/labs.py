@@ -5,7 +5,7 @@ from .base import BaseModel
 class LabsScoreflow(BaseModel):
     """
     GET /labs/scoreflow/:user/:gamemode
-    A condensed graph of all of the user's records in the gamemode.
+    data key: 'scoreflow'
     """
 
     def __init__(self, data: Dict[str, Any]):
@@ -26,7 +26,7 @@ class LabsScoreflow(BaseModel):
 class LabsLeagueflow(BaseModel):
     """
     GET /labs/leagueflow/:user
-    A condensed graph of all of the user's matches in TETRA LEAGUE.
+    data key: 'leagueflow'
     """
 
     def __init__(self, data: Dict[str, Any]):
@@ -47,7 +47,7 @@ class LabsLeagueflow(BaseModel):
 class LabsLeagueRanks(BaseModel):
     """
     GET /labs/league_ranks
-    A view over all TETRA LEAGUE ranks and their metadata.
+    Response shape: { data: { <rank>: { ..stats.. } }, s: ..., t: ... }
     """
 
     def __init__(self, data: Dict[str, Any]):
@@ -59,7 +59,8 @@ class LabsLeagueRanks(BaseModel):
 
     @property
     def ranks(self) -> Dict[str, Any]:
-        return self._raw
+        """rank name -> stats dict"""
+        return self._raw.get("data", self._raw)
 
     def __repr__(self) -> str:
-        return f"<LabsLeagueRanks ranks={list(self._raw.keys())!r}>"
+        return f"<LabsLeagueRanks ranks={list(self.ranks.keys())!r}>"

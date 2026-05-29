@@ -5,7 +5,6 @@ from .base import BaseModel
 class Achievement(BaseModel):
     """
     GET /achievements/:k
-    Data about the achievement itself, its cutoffs, and its leaderboard.
     """
 
     def __init__(self, data: Dict[str, Any]):
@@ -36,6 +35,9 @@ class Achievement(BaseModel):
 class AchievementEntry(BaseModel):
     """
     A single entry from GET /achievements/:k/entries.
+    Response shape per entry:
+      { _id: ..., k: ..., v: ..., additional: ..., t: ...,
+        u: { _id: ..., username: ... } }
     """
 
     def __init__(self, data: Dict[str, Any]):
@@ -46,12 +48,19 @@ class AchievementEntry(BaseModel):
         return cls(data)
 
     @property
+    def id(self) -> str:
+        return self._raw.get("_id", "")
+
+    @property
     def userid(self) -> str:
+        u = self._raw.get("u")
+        if isinstance(u, dict):
+            return u.get("_id", "")
         return self._raw.get("userid", "")
 
     @property
     def username(self) -> Optional[str]:
-        u = self._raw.get("user")
+        u = self._raw.get("u")
         if isinstance(u, dict):
             return u.get("username")
         return None
@@ -73,4 +82,4 @@ class AchievementEntry(BaseModel):
         return self._raw.get("t")
 
     def __repr__(self) -> str:
-        return f"<AchievementEntry userid={self.userid!r} v={self.v!r}>"
+        return f"<AchievementEntry username={self.username!r} v={self.v!r}>"
