@@ -27,6 +27,14 @@ def test_get_user():
     print(f"  verified    : {user.verified}")
     print(f"  bio         : {user.bio}")
     print(f"  friend_count: {user.friend_count}")
+    print(f"  badges ({len(user.badges)}):")
+    for b in user.badges:
+        print(f"    {repr(b)}")
+        print(f"      label   : {b.label}")
+        print(f"      ts      : {b.ts}")
+        print(f"      group   : {b.group}")
+        print(f"      desc    : {b.desc}")
+        print(f"      global_ : {b.global_}")
 
 
 def test_get_user_summary_40l():
