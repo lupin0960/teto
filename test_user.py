@@ -1,6 +1,6 @@
 from teto import TetoClient
 
-TEST_USER = "nplui"
+TEST_USER = "hamshigi"
 
 client = TetoClient()
 
