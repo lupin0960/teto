@@ -2,6 +2,43 @@ from typing import Any, Dict, List, Optional
 from .base import BaseModel
 
 
+class Badge(BaseModel):
+    """
+    A badge on a user's profile.
+    Part of the user object returned by GET /users/:user
+    """
+
+    def __init__(
+        self,
+        id: str,
+        label: str,
+        ts: Optional[str] = None,
+        group: Optional[str] = None,
+        desc: Optional[str] = None,
+        global_: Optional[bool] = None,
+    ):
+        self.id = id
+        self.label = label
+        self.ts = ts
+        self.group = group
+        self.desc = desc
+        self.global_ = global_
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Badge":
+        return cls(
+            id=data.get("id", ""),
+            label=data.get("label", ""),
+            ts=data.get("ts"),
+            group=data.get("group"),
+            desc=data.get("desc"),
+            global_=data.get("global"),
+        )
+
+    def __repr__(self) -> str:
+        return f"<Badge id={self.id!r} label={self.label!r}>"
+
+
 class User(BaseModel):
     """
     GET /users/:user
@@ -27,6 +64,7 @@ class User(BaseModel):
         bio: Optional[str] = None,
         connections: Optional[Dict[str, Any]] = None,
         friend_count: int = 0,
+        badges: Optional[List[Badge]] = None,
     ):
         self.id = id
         self.username = username
@@ -45,6 +83,7 @@ class User(BaseModel):
         self.bio = bio
         self.connections = connections or {}
         self.friend_count = friend_count
+        self.badges = badges or []
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "User":
@@ -67,6 +106,7 @@ class User(BaseModel):
             bio=u.get("bio"),
             connections=u.get("connections", {}),
             friend_count=u.get("friend_count", 0),
+            badges=[Badge.from_dict(b) for b in u.get("badges", [])],
         )
 
     def __repr__(self) -> str:
