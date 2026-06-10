@@ -1,5 +1,6 @@
 from .base import BaseModel
 from .user import (
+    Badge,
     User,
     UserSummary40L,
     UserSummaryBlitz,
@@ -19,6 +20,7 @@ from .achievement import Achievement, AchievementEntry
 
 __all__ = [
     "BaseModel",
+    "Badge",
     "User",
     "UserSummary40L",
     "UserSummaryBlitz",
