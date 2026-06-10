@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Optional
 from .base import BaseModel
+from .record import Record, RecordResults
 
 
 class Badge(BaseModel):
@@ -121,7 +122,7 @@ class UserSummary40L(BaseModel):
 
     def __init__(
         self,
-        record: Optional[Dict[str, Any]],
+        record: Optional[Record],
         rank: Optional[int],
         rank_local: Optional[int],
     ):
@@ -131,8 +132,9 @@ class UserSummary40L(BaseModel):
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "UserSummary40L":
+        raw_record = data.get("record")
         return cls(
-            record=data.get("record"),
+            record=Record.from_dict(raw_record) if raw_record else None,
             rank=data.get("rank"),
             rank_local=data.get("rank_local"),
         )
@@ -149,7 +151,7 @@ class UserSummaryBlitz(BaseModel):
 
     def __init__(
         self,
-        record: Optional[Dict[str, Any]],
+        record: Optional[Record],
         rank: Optional[int],
         rank_local: Optional[int],
     ):
@@ -159,8 +161,9 @@ class UserSummaryBlitz(BaseModel):
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "UserSummaryBlitz":
+        raw_record = data.get("record")
         return cls(
-            record=data.get("record"),
+            record=Record.from_dict(raw_record) if raw_record else None,
             rank=data.get("rank"),
             rank_local=data.get("rank_local"),
         )
@@ -177,7 +180,7 @@ class UserSummaryZenith(BaseModel):
 
     def __init__(
         self,
-        record: Optional[Dict[str, Any]],
+        record: Optional[Record],
         best: Dict[str, Any],
     ):
         self.record = record
@@ -185,8 +188,9 @@ class UserSummaryZenith(BaseModel):
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "UserSummaryZenith":
+        raw_record = data.get("record")
         return cls(
-            record=data.get("record"),
+            record=Record.from_dict(raw_record) if raw_record else None,
             best=data.get("best", {}),
         )
 
@@ -202,7 +206,7 @@ class UserSummaryZenithEx(BaseModel):
 
     def __init__(
         self,
-        record: Optional[Dict[str, Any]],
+        record: Optional[Record],
         best: Dict[str, Any],
     ):
         self.record = record
@@ -210,8 +214,9 @@ class UserSummaryZenithEx(BaseModel):
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "UserSummaryZenithEx":
+        raw_record = data.get("record")
         return cls(
-            record=data.get("record"),
+            record=Record.from_dict(raw_record) if raw_record else None,
             best=data.get("best", {}),
         )
 
@@ -357,6 +362,7 @@ class UserRecord(BaseModel):
     """
     GET /users/:user/records/:gamemode/:leaderboard
     A single record entry from a user's personal records.
+    Uses the same structure as Record but returned under a different endpoint.
     """
 
     def __init__(
@@ -365,7 +371,7 @@ class UserRecord(BaseModel):
         replayid: str,
         gamemode: str,
         userid: str,
-        results: Dict[str, Any],
+        results: RecordResults,
         extras: Dict[str, Any],
         ts: Optional[str] = None,
     ):
@@ -384,7 +390,7 @@ class UserRecord(BaseModel):
             replayid=data.get("replayid", ""),
             gamemode=data.get("gamemode", ""),
             userid=data.get("userid", ""),
-            results=data.get("results", {}),
+            results=RecordResults.from_dict(data.get("results", {})),
             extras=data.get("extras", {}),
             ts=data.get("ts"),
         )
