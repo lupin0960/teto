@@ -145,7 +145,18 @@ def test_get_user_summary_achievements():
     print(repr(s))
     print(f"  count : {len(s.achievements)}")
     if s.achievements:
-        print(f"  first : {s.achievements[0]}")
+        first = s.achievements[0]
+        print(f"  first : {repr(first)}")
+        print(f"    k        : {first.k}")
+        print(f"    name     : {first.name}")
+        print(f"    category : {first.category}")
+        print(f"    desc     : {first.desc}")
+        print(f"    v        : {first.v}")
+        print(f"    pos      : {first.pos}")
+        print(f"    total    : {first.total}")
+        print(f"    rank     : {first.rank}")
+        print(f"    progress : {first.progress}")
+        print(f"    t        : {first.t}")
 
 
 def test_get_user_summaries():

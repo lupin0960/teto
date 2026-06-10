@@ -2,6 +2,97 @@ from typing import Any, Dict, List, Optional
 from .base import BaseModel
 
 
+class UserAchievement(BaseModel):
+    """
+    A single achievement entry inside GET /users/:user/summaries/achievements.
+    Each item is an achievement object merged with the user's progress fields.
+    """
+
+    def __init__(
+        self,
+        id: str,
+        k: int,
+        name: str,
+        object: str,
+        category: str,
+        desc: str,
+        n: str,
+        v: Optional[float],
+        a: Optional[float],
+        t: Optional[str],
+        pos: Optional[int],
+        total: Optional[int],
+        rank: Optional[int],
+        progress: Optional[float],
+        hidden: bool,
+        nolb: bool,
+        notifypb: bool,
+        art: Optional[int],
+        min: Optional[float],
+        deci: Optional[int],
+        rt: Optional[int],
+        vt: Optional[int],
+        tiebreak: Optional[int],
+        o: Optional[int],
+    ):
+        self.id = id
+        self.k = k
+        self.name = name
+        self.object = object
+        self.category = category
+        self.desc = desc
+        self.n = n
+        self.v = v
+        self.a = a
+        self.t = t
+        self.pos = pos
+        self.total = total
+        self.rank = rank
+        self.progress = progress
+        self.hidden = hidden
+        self.nolb = nolb
+        self.notifypb = notifypb
+        self.art = art
+        self.min = min
+        self.deci = deci
+        self.rt = rt
+        self.vt = vt
+        self.tiebreak = tiebreak
+        self.o = o
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "UserAchievement":
+        return cls(
+            id=data.get("_id", ""),
+            k=data.get("k", 0),
+            name=data.get("name", ""),
+            object=data.get("object", ""),
+            category=data.get("category", ""),
+            desc=data.get("desc", ""),
+            n=data.get("n", ""),
+            v=data.get("v"),
+            a=data.get("a"),
+            t=data.get("t"),
+            pos=data.get("pos"),
+            total=data.get("total"),
+            rank=data.get("rank"),
+            progress=data.get("progress"),
+            hidden=data.get("hidden", False),
+            nolb=data.get("nolb", False),
+            notifypb=data.get("notifypb", False),
+            art=data.get("art"),
+            min=data.get("min"),
+            deci=data.get("deci"),
+            rt=data.get("rt"),
+            vt=data.get("vt"),
+            tiebreak=data.get("tiebreak"),
+            o=data.get("o"),
+        )
+
+    def __repr__(self) -> str:
+        return f"<UserAchievement k={self.k!r} name={self.name!r} rank={self.rank!r}>"
+
+
 class Achievement(BaseModel):
     """
     GET /achievements/:k
@@ -35,9 +126,6 @@ class Achievement(BaseModel):
 class AchievementEntry(BaseModel):
     """
     A single entry from GET /achievements/:k/entries.
-    Response shape per entry:
-      { _id: ..., k: ..., v: ..., additional: ..., t: ...,
-        u: { _id: ..., username: ... } }
     """
 
     def __init__(self, data: Dict[str, Any]):

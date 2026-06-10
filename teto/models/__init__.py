@@ -26,7 +26,7 @@ from .user import (
 from .general import ServerStats, ServerActivity
 from .news import NewsItem
 from .labs import LabsScoreflow, LabsLeagueflow, LabsLeagueRanks
-from .achievement import Achievement, AchievementEntry
+from .achievement import Achievement, AchievementEntry, UserAchievement
 
 __all__ = [
     "BaseModel",
@@ -58,4 +58,5 @@ __all__ = [
     "LabsLeagueRanks",
     "Achievement",
     "AchievementEntry",
+    "UserAchievement",
 ]

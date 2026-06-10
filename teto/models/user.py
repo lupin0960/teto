@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Optional
 from .base import BaseModel
 from .record import Record, RecordResults
+from .achievement import UserAchievement
 
 
 class Badge(BaseModel):
@@ -328,13 +329,13 @@ class UserSummaryAchievements(BaseModel):
     An object containing all the user's achievements.
     """
 
-    def __init__(self, achievements: List[Dict[str, Any]]):
+    def __init__(self, achievements: List[UserAchievement]):
         self.achievements = achievements
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "UserSummaryAchievements":
-        achievements = data if isinstance(data, list) else data.get("achievements", [])
-        return cls(achievements=achievements)
+        raw_list = data if isinstance(data, list) else data.get("achievements", [])
+        return cls(achievements=[UserAchievement.from_dict(a) for a in raw_list])
 
     def __repr__(self) -> str:
         return f"<UserSummaryAchievements count={len(self.achievements)}>"
@@ -383,8 +384,6 @@ class UserSummaryAll(BaseModel):
 class UserRecord(BaseModel):
     """
     GET /users/:user/records/:gamemode/:leaderboard
-    A single record entry from a user's personal records.
-    Uses the same structure as Record but returned under a different endpoint.
     """
 
     def __init__(
