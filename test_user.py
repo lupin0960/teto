@@ -11,6 +11,41 @@ def section(title: str):
     print('='*40)
 
 
+def print_record(r):
+    if r is None:
+        print("    (no record)")
+        return
+    print(f"    {repr(r)}")
+    print(f"      id         : {r.id}")
+    print(f"      replayid   : {r.replayid}")
+    print(f"      gamemode   : {r.gamemode}")
+    print(f"      ts         : {r.ts}")
+    print(f"      pb         : {r.pb}")
+    print(f"      user       : {repr(r.user)}")
+    res = r.results
+    print(f"      results:")
+    print(f"        gameoverreason : {res.gameoverreason}")
+    agg = res.aggregatestats
+    print(f"        aggregatestats : apm={agg.apm}  pps={agg.pps}  vsscore={agg.vsscore}")
+    st = res.stats
+    print(f"        stats:")
+    print(f"          finaltime    : {st.finaltime}")
+    print(f"          piecesplaced : {st.piecesplaced}")
+    print(f"          inputs       : {st.inputs}")
+    print(f"          holds        : {st.holds}")
+    print(f"          lines        : {st.lines}")
+    print(f"          score        : {st.score}")
+    print(f"          tspins       : {st.tspins}")
+    print(f"          topcombo     : {st.topcombo}")
+    print(f"          topbtb       : {st.topbtb}")
+    cl = st.clears
+    print(f"          clears       : singles={cl.singles} doubles={cl.doubles} triples={cl.triples} quads={cl.quads} allclear={cl.allclear}")
+    gb = st.garbage
+    print(f"          garbage      : sent={gb.sent} received={gb.received} attack={gb.attack}")
+    fi = st.finesse
+    print(f"          finesse      : faults={fi.faults} perfectpieces={fi.perfectpieces}")
+
+
 def test_get_user():
     section("get_user")
     user = client.get_user(TEST_USER)
@@ -43,7 +78,7 @@ def test_get_user_summary_40l():
     print(repr(s))
     print(f"  rank       : {s.rank}")
     print(f"  rank_local : {s.rank_local}")
-    print(f"  record     : {s.record}")
+    print_record(s.record)
 
 
 def test_get_user_summary_blitz():
@@ -52,23 +87,23 @@ def test_get_user_summary_blitz():
     print(repr(s))
     print(f"  rank       : {s.rank}")
     print(f"  rank_local : {s.rank_local}")
-    print(f"  record     : {s.record}")
+    print_record(s.record)
 
 
 def test_get_user_summary_zenith():
     section("get_user_summary_zenith")
     s = client.get_user_summary_zenith(TEST_USER)
     print(repr(s))
-    print(f"  record : {s.record}")
-    print(f"  best   : {s.best}")
+    print_record(s.record)
+    print(f"  best : {s.best}")
 
 
 def test_get_user_summary_zenithex():
     section("get_user_summary_zenithex")
     s = client.get_user_summary_zenithex(TEST_USER)
     print(repr(s))
-    print(f"  record : {s.record}")
-    print(f"  best   : {s.best}")
+    print_record(s.record)
+    print(f"  best : {s.best}")
 
 
 def test_get_user_summary_league():
@@ -128,7 +163,20 @@ def test_get_user_records():
         print(f"    userid   : {r.userid}")
         print(f"    gamemode : {r.gamemode}")
         print(f"    ts       : {r.ts}")
-        print(f"    results  : {r.results}")
+        res = r.results
+        print(f"    results:")
+        print(f"      gameoverreason : {res.gameoverreason}")
+        agg = res.aggregatestats
+        print(f"      aggregatestats : apm={agg.apm}  pps={agg.pps}  vsscore={agg.vsscore}")
+        st = res.stats
+        print(f"      stats:")
+        print(f"        finaltime    : {st.finaltime}")
+        print(f"        piecesplaced : {st.piecesplaced}")
+        print(f"        inputs       : {st.inputs}")
+        cl = st.clears
+        print(f"        clears       : quads={cl.quads} allclear={cl.allclear}")
+        fi = st.finesse
+        print(f"        finesse      : faults={fi.faults} perfectpieces={fi.perfectpieces}")
 
 
 if __name__ == "__main__":
