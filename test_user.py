@@ -11,10 +11,11 @@ def section(title: str):
     print('='*40)
 
 
-def print_record(r):
+def print_record(r, label="record"):
     if r is None:
-        print("    (no record)")
+        print(f"  {label} : (no record)")
         return
+    print(f"  {label}:")
     print(f"    {repr(r)}")
     print(f"      id         : {r.id}")
     print(f"      replayid   : {r.replayid}")
@@ -95,7 +96,10 @@ def test_get_user_summary_zenith():
     s = client.get_user_summary_zenith(TEST_USER)
     print(repr(s))
     print_record(s.record)
-    print(f"  best : {s.best}")
+    print(f"  best:")
+    print(f"    {repr(s.best)}")
+    print(f"    rank : {s.best.rank}")
+    print_record(s.best.record, label="best.record")
 
 
 def test_get_user_summary_zenithex():
@@ -103,7 +107,10 @@ def test_get_user_summary_zenithex():
     s = client.get_user_summary_zenithex(TEST_USER)
     print(repr(s))
     print_record(s.record)
-    print(f"  best : {s.best}")
+    print(f"  best:")
+    print(f"    {repr(s.best)}")
+    print(f"    rank : {s.best.rank}")
+    print_record(s.best.record, label="best.record")
 
 
 def test_get_user_summary_league():

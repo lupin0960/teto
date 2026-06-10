@@ -114,6 +114,28 @@ class User(BaseModel):
         return f"<User id={self.id!r} username={self.username!r} role={self.role!r}>"
 
 
+class ZenithBest(BaseModel):
+    """
+    The best run entry inside UserSummaryZenith / UserSummaryZenithEx.
+    Shape: { record: <Record>, rank: int }
+    """
+
+    def __init__(self, record: Optional[Record], rank: Optional[int]):
+        self.record = record
+        self.rank = rank
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "ZenithBest":
+        raw_record = data.get("record")
+        return cls(
+            record=Record.from_dict(raw_record) if raw_record else None,
+            rank=data.get("rank"),
+        )
+
+    def __repr__(self) -> str:
+        return f"<ZenithBest rank={self.rank!r}>"
+
+
 class UserSummary40L(BaseModel):
     """
     GET /users/:user/summaries/40l
@@ -181,7 +203,7 @@ class UserSummaryZenith(BaseModel):
     def __init__(
         self,
         record: Optional[Record],
-        best: Dict[str, Any],
+        best: ZenithBest,
     ):
         self.record = record
         self.best = best
@@ -191,7 +213,7 @@ class UserSummaryZenith(BaseModel):
         raw_record = data.get("record")
         return cls(
             record=Record.from_dict(raw_record) if raw_record else None,
-            best=data.get("best", {}),
+            best=ZenithBest.from_dict(data.get("best", {})),
         )
 
     def __repr__(self) -> str:
@@ -207,7 +229,7 @@ class UserSummaryZenithEx(BaseModel):
     def __init__(
         self,
         record: Optional[Record],
-        best: Dict[str, Any],
+        best: ZenithBest,
     ):
         self.record = record
         self.best = best
@@ -217,7 +239,7 @@ class UserSummaryZenithEx(BaseModel):
         raw_record = data.get("record")
         return cls(
             record=Record.from_dict(raw_record) if raw_record else None,
-            best=data.get("best", {}),
+            best=ZenithBest.from_dict(data.get("best", {})),
         )
 
     def __repr__(self) -> str:
