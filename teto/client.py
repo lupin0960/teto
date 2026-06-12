@@ -118,8 +118,10 @@ class TetoClient:
     def search_users(self, query: str) -> List[User]:
         """GET /users/search/:query — search users by username."""
         data = self.get_request(f"users/search/{query}")
-        users = data if isinstance(data, list) else data.get("users", [])
-        return [User.from_dict(u) for u in users]
+        user = data.get("user")
+        if user is None:
+            return []
+        return [User.from_dict(user)]
 
     def get_leaderboard(
         self,
